@@ -86,9 +86,9 @@ input,select,textarea,button{font-family:var(--font)}
 <div class="wrap">
   <div class="section-nav" id="section-nav"></div>
 
-  <div style="background:var(--amb-l);border:1.5px solid var(--amb-b);border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start">
-    <span style="font-size:18px;flex-shrink:0">⏰</span>
-    <div style="font-size:11.5px;color:#92400E;line-height:1.6"><strong>Wajib diisi di akhir hari, sekitar jam 16:00</strong> — setelah operasional hari itu selesai, biar semua angka (leads, follow up, closing) udah final dan gak berubah lagi.</div>
+  <div style="background:var(--amb-l);border:2.5px solid var(--amb);border-radius:14px;padding:16px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:center;box-shadow:0 2px 8px rgba(217,119,6,.15)">
+    <span style="font-size:32px;flex-shrink:0">⏰</span>
+    <div style="font-size:14px;color:#92400E;line-height:1.5"><strong style="font-size:15px">Wajib diisi jam 16:00 (akhir hari)</strong><br>Setelah operasional hari itu selesai, biar semua angka final.</div>
   </div>
 
   <!-- BAGIAN 1: IDENTITAS -->
@@ -186,21 +186,17 @@ input,select,textarea,button{font-family:var(--font)}
     </div>
     <div class="form-row" id="row-lost_alasan">
       <label>Lost dengan Alasan Lengkap <span class="req">*</span> <span class="hint">(≤ Lost Lead)</span></label>
-      <input type="number" inputmode="numeric" min="0" id="f-lost_dengan_alasan" placeholder="0">
+      <input type="number" inputmode="numeric" min="0" id="f-lost_dengan_alasan" placeholder="0" oninput="onLostAlasanChange()">
       <div class="form-err">Gak boleh lebih besar dari Lost Lead</div>
     </div>
-    <div class="form-row" id="row-lost_reason">
-      <label>Lost Reason Dominan <span class="req">*</span> <span class="hint">(wajib kalau ada Lost Lead)</span></label>
-      <select id="f-lost_reason">
-        <option value="">— pilih —</option>
-        <option>Tidak respon</option>
-        <option>Harga</option>
-        <option>Lokasi</option>
-        <option>Stok-Produk</option>
-        <option>Belum siap beli</option>
-        <option>Kompetitor</option>
-        <option>Lainnya</option>
-      </select>
+    <div class="form-row" id="row-lost-detail" style="display:none">
+      <label>Alasan Tiap Lost <span class="hint">(pilih satu-satu)</span></label>
+      <div id="lost-reason-rows"></div>
+    </div>
+    <div class="form-row">
+      <label>Lost Reason Dominan <span class="hint">(otomatis, dari alasan yang paling sering muncul)</span></label>
+      <input type="text" id="f-lost-reason-dominan-display" readonly placeholder="Isi dulu alasan tiap lost di atas">
+      <div class="form-hint" id="lost-dominan-note"></div>
     </div>
     <div class="sum-box" id="sum-cr">Closing Rate New Lead: —</div>
   </div>
@@ -322,6 +318,68 @@ function getPicValue(){
   return v;
 }
 
+// ══════════════════════════════════════════════════════
+// LOST REASON — baris dinamis + dominan otomatis
+// ══════════════════════════════════════════════════════
+const LOST_REASON_OPTIONS=['Tidak respon','Harga','Lokasi','Stok-Produk','Belum siap beli','Kompetitor','Lainnya'];
+
+function onLostAlasanChange(){
+  const n=Math.max(0,num('f-lost_dengan_alasan'));
+  const container=document.getElementById('lost-reason-rows');
+  const wrap=document.getElementById('row-lost-detail');
+  const existing=container.querySelectorAll('select.lost-reason-item');
+  const existingCount=existing.length;
+
+  if(n>existingCount){
+    for(let i=existingCount;i<n;i++){
+      const div=document.createElement('div');
+      div.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:8px';
+      div.innerHTML='<span style="font-size:10.5px;color:var(--mut);width:64px;flex-shrink:0">Lost #'+(i+1)+'</span>'
+        +'<select class="lost-reason-item" style="flex:1;padding:9px 11px;border:1.5px solid var(--bdr);border-radius:8px;font-size:12.5px;background:var(--bg);font-family:var(--font)" onchange="computeDominan()">'
+        +'<option value="">— pilih —</option>'
+        +LOST_REASON_OPTIONS.map(o=>'<option>'+o+'</option>').join('')
+        +'</select>';
+      container.appendChild(div);
+    }
+  } else if(n<existingCount){
+    // Hapus dari BELAKANG doang — baris yang udah dipilih di depan
+    // (Lost #1, #2, dst) TETAP kepertahanin, gak ke-reset.
+    for(let i=existingCount;i>n;i--){
+      container.lastElementChild.remove();
+    }
+  }
+  wrap.style.display=n>0?'block':'none';
+  computeDominan();
+}
+
+function computeDominan(){
+  const selects=document.querySelectorAll('#lost-reason-rows select.lost-reason-item');
+  const counts={};
+  const order=[]; // urutan kemunculan PERTAMA tiap alasan — dipakai buat tie-break
+  selects.forEach(sel=>{
+    const v=sel.value;
+    if(!v) return;
+    if(!(v in counts)){ counts[v]=0; order.push(v); }
+    counts[v]++;
+  });
+  let winner='', maxCount=0;
+  order.forEach(v=>{
+    if(counts[v]>maxCount){ maxCount=counts[v]; winner=v; }
+  });
+  const totalFilled=Object.values(counts).reduce((a,b)=>a+b,0);
+  const isTie=order.filter(v=>counts[v]===maxCount).length>1;
+
+  document.getElementById('f-lost-reason-dominan-display').value=winner||'—';
+  const note=document.getElementById('lost-dominan-note');
+  if(winner){
+    note.textContent=winner+' muncul '+maxCount+' dari '+totalFilled+' yang udah dipilih'+(isTie?' (seri — dipilih yang duluan muncul)':'');
+  } else {
+    note.textContent='';
+  }
+  window._lostReasonDominan=winner;
+  validateAndPreview();
+}
+
 function scrollToSection(id){
   const el=document.querySelector('.card[data-section="'+id+'"]');
   if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
@@ -370,11 +428,9 @@ function validateAndPreview(){
   const errLostAlasan=lostAlasan>lostLead;
   rowLostAlasan.classList.toggle('has-err',errLostAlasan);
 
-  // Validasi 4: Lost Reason wajib kalau Lost Lead > 0
-  const rowLostReason=document.getElementById('row-lost_reason');
-  const lostReasonVal=document.getElementById('f-lost_reason').value;
-  const errLostReason=lostLead>0 && !lostReasonVal;
-  rowLostReason.style.display='block';
+  // Validasi 4: Lost Reason Dominan (otomatis) wajib ada kalau Lost
+  // dengan Alasan Lengkap > 0 — bukan dropdown manual lagi.
+  const errLostReason=lostAlasan>0 && !window._lostReasonDominan;
 
   // Preview: Chat Terjawab % & Fast Response %
   const chatPct=newLead>0?Math.round(terjawab/newLead*100):null;
@@ -433,9 +489,10 @@ async function submitForm(){
   const terklasifikasi=num('f-lead_terklasifikasi');
   const wajibFu=num('f-wajib_fu');
   const lostLead=num('f-lost_lead');
-  const lostReason=document.getElementById('f-lost_reason').value;
+  const lostAlasan=num('f-lost_dengan_alasan');
+  const lostReason=window._lostReasonDominan||'';
 
-  if(lostLead>0 && !lostReason){ toast('⚠️ Lost Reason Dominan wajib diisi karena ada Lost Lead.'); scrollToSection(4); return; }
+  if(lostAlasan>0 && !lostReason){ toast('⚠️ Lengkapi dulu semua dropdown "Alasan Tiap Lost" di atas.'); scrollToSection(4); return; }
 
   const cfg=getCfg();
   if(!cfg){ toast('⚠️ Setup Sheet belum diisi — klik ⚙️ Pengaturan Sheet dulu.'); return; }
@@ -484,7 +541,7 @@ renderSectionNav();
 validateAndPreview();
 
 ['f-new_lead_masuk','f-lead_terjawab','f-lead_5menit','f-lead_terklasifikasi','f-hot','f-warm','f-low',
- 'f-wajib_fu','f-sudah_fu','f-new_customer_deal','f-lost_lead','f-lost_dengan_alasan','f-lost_reason'
+ 'f-wajib_fu','f-sudah_fu','f-new_customer_deal','f-lost_lead','f-lost_dengan_alasan'
 ].forEach(id=>{
   document.getElementById(id).addEventListener('input',validateAndPreview);
   document.getElementById(id).addEventListener('change',validateAndPreview);
