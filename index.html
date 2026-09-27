@@ -161,6 +161,12 @@ input,select,textarea,button{font-family:var(--font)}
   <!-- BAGIAN 4: FOLLOW UP & HASIL -->
   <div class="card" data-section="4">
     <div class="card-title"><span class="num">4</span>Follow Up & Hasil</div>
+    <div class="card-desc">Bagian ini ngukur 2 hal: seberapa gigih lead yang BELUM beli itu dikejar, dan apa HASIL AKHIRNYA hari ini (deal, omzet, atau malah gagal/lost).</div>
+
+    <div style="font-size:10px;color:var(--mut);line-height:1.7;margin-bottom:10px;background:var(--bg);border-radius:8px;padding:9px 11px">
+      <strong>Wajib FU</strong> = lead yang MASIH LAYAK dikejar (belum deal, belum diputusin lost)<br>
+      <strong>Sudah FU</strong> = dari yang wajib itu, berapa yang BENERAN dihubungin lagi hari ini
+    </div>
     <div class="form-row" id="row-wajib_fu">
       <label>Lead Wajib Follow Up <span class="req">*</span></label>
       <input type="number" inputmode="numeric" min="0" id="f-wajib_fu" placeholder="0">
@@ -169,6 +175,11 @@ input,select,textarea,button{font-family:var(--font)}
       <label>Lead Sudah Di-Follow Up <span class="req">*</span> <span class="hint">(≤ Wajib FU)</span></label>
       <input type="number" inputmode="numeric" min="0" id="f-sudah_fu" placeholder="0">
       <div class="form-err">Gak boleh lebih besar dari Lead Wajib Follow Up</div>
+    </div>
+
+    <div style="font-size:10px;color:var(--mut);line-height:1.7;margin:14px 0 10px;background:var(--bg);border-radius:8px;padding:9px 11px">
+      <strong>New Customer Deal</strong> = customer BARU yang beneran beli pertama kali (bukan repeat customer)<br>
+      <strong>Omzet New Traffic</strong> = omzet HANYA dari deal itu, bukan omzet toko keseluruhan hari ini
     </div>
     <div class="row2">
       <div class="form-row">
@@ -179,6 +190,11 @@ input,select,textarea,button{font-family:var(--font)}
         <label>Omzet New Traffic (Rp) <span class="req">*</span></label>
         <input type="text" inputmode="numeric" id="f-omzet_new_traffic" placeholder="0" oninput="formatRupiah(this)">
       </div>
+    </div>
+
+    <div style="font-size:10px;color:var(--mut);line-height:1.7;margin:14px 0 10px;background:var(--bg);border-radius:8px;padding:9px 11px">
+      <strong>Lost Lead</strong> = lead yang diputusin GAK LANJUT (final, bukan sekadar belum dibales)<br>
+      <strong>Lost dengan Alasan Lengkap</strong> = dari yang lost itu, berapa yang KETAUAN alasannya kenapa gagal (bukan asal ditutup "gak tau kenapa")
     </div>
     <div class="form-row" id="row-lost_lead">
       <label>Lost Lead <span class="req">*</span></label>
