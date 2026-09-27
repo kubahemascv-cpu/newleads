@@ -86,6 +86,11 @@ input,select,textarea,button{font-family:var(--font)}
 <div class="wrap">
   <div class="section-nav" id="section-nav"></div>
 
+  <div style="background:var(--amb-l);border:1.5px solid var(--amb-b);border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start">
+    <span style="font-size:18px;flex-shrink:0">⏰</span>
+    <div style="font-size:11.5px;color:#92400E;line-height:1.6"><strong>Wajib diisi di akhir hari, sekitar jam 16:00</strong> — setelah operasional hari itu selesai, biar semua angka (leads, follow up, closing) udah final dan gak berubah lagi.</div>
+  </div>
+
   <!-- BAGIAN 1: IDENTITAS -->
   <div class="card" data-section="1">
     <div class="card-title"><span class="num">1</span>Identitas</div>
@@ -95,7 +100,12 @@ input,select,textarea,button{font-family:var(--font)}
     </div>
     <div class="form-row">
       <label>Nama PIC</label>
-      <input type="text" id="f-pic" value="Faizal" readonly>
+      <select id="f-pic" onchange="onPicChange()">
+        <option value="Faizal">Faizal</option>
+        <option value="Tri">Tri</option>
+        <option value="__lainnya__">Lainnya...</option>
+      </select>
+      <input type="text" id="f-pic-lainnya" placeholder="Ketik nama PIC" style="display:none;margin-top:8px">
     </div>
   </div>
 
@@ -167,7 +177,7 @@ input,select,textarea,button{font-family:var(--font)}
       </div>
       <div class="form-row">
         <label>Omzet New Traffic (Rp) <span class="req">*</span></label>
-        <input type="number" inputmode="numeric" min="0" id="f-omzet_new_traffic" placeholder="0">
+        <input type="text" inputmode="numeric" id="f-omzet_new_traffic" placeholder="0" oninput="formatRupiah(this)">
       </div>
     </div>
     <div class="form-row" id="row-lost_lead">
@@ -302,11 +312,33 @@ function renderSectionNav(){
     `<div class="nav-pill" data-nav="${s.id}" onclick="scrollToSection(${s.id})">${s.label}</div>`
   ).join('');
 }
+function onPicChange(){
+  const v=document.getElementById('f-pic').value;
+  document.getElementById('f-pic-lainnya').style.display=(v==='__lainnya__')?'block':'none';
+}
+function getPicValue(){
+  const v=document.getElementById('f-pic').value;
+  if(v==='__lainnya__') return document.getElementById('f-pic-lainnya').value.trim();
+  return v;
+}
+
 function scrollToSection(id){
   const el=document.querySelector('.card[data-section="'+id+'"]');
   if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function num(id){ return +document.getElementById(id).value || 0; }
+
+// Format live "1500000" -> "1.500.000" saat ngetik. Titik cuma buat
+// tampilan, disimpen di value input-nya juga (biar keliatan pas ngisi),
+// tapi dibersihin lagi pakai numRupiah() sebelum dikirim ke server.
+function formatRupiah(el){
+  const raw=el.value.replace(/\D/g,'');
+  el.value=raw?Number(raw).toLocaleString('id-ID'):'';
+}
+function numRupiah(id){
+  const raw=document.getElementById(id).value.replace(/\D/g,'');
+  return raw?+raw:0;
+}
 
 // ══════════════════════════════════════════════════════
 // LIVE VALIDATION & KPI PREVIEW
@@ -375,6 +407,7 @@ async function submitForm(){
 
   const tanggal=document.getElementById('f-tanggal').value;
   if(!tanggal){ toast('⚠️ Tanggal Laporan wajib diisi.'); scrollToSection(1); return; }
+  if(!getPicValue()){ toast('⚠️ Nama PIC wajib diisi (pilih "Lainnya" perlu ketik namanya).'); scrollToSection(1); return; }
 
   // Cek field angka WAJIB — harus literally keisi (bukan cuma default 0
   // dari konversi angka), biar PIC gak kelewat ngisi tanpa sadar.
@@ -412,12 +445,12 @@ async function submitForm(){
   const kendalaUtama=kendalaPilihan+(kendalaDetail?' — '+kendalaDetail:'');
 
   const data={
-    tanggal:tanggal, pic:'Faizal',
+    tanggal:tanggal, pic:getPicValue(),
     new_lead_masuk:newLead, lead_terjawab:num('f-lead_terjawab'), lead_5menit:num('f-lead_5menit'),
     lead_terklasifikasi:terklasifikasi, qualified:num('f-qualified'),
     hot:num('f-hot'), warm:num('f-warm'), low:num('f-low'),
     wajib_fu:wajibFu, sudah_fu:num('f-sudah_fu'),
-    new_customer_deal:num('f-new_customer_deal'), omzet_new_traffic:num('f-omzet_new_traffic'),
+    new_customer_deal:num('f-new_customer_deal'), omzet_new_traffic:numRupiah('f-omzet_new_traffic'),
     lost_lead:lostLead, lost_dengan_alasan:num('f-lost_dengan_alasan'), lost_reason:lostReason,
     kendala_utama:kendalaUtama, catatan_pic:document.getElementById('f-catatan_pic').value.trim(),
   };
