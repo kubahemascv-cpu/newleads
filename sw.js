@@ -1,5 +1,5 @@
 // SW Form PIC New Leads — Faizal
-const CACHE = 'formpic-newleads-v4';
+const CACHE = 'formpic-newleads-v5';
 
 self.addEventListener('install', function (e) {
   e.waitUntil(

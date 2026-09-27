@@ -204,6 +204,7 @@ input,select,textarea,button{font-family:var(--font)}
   <!-- BAGIAN 5: CATATAN -->
   <div class="card" data-section="5">
     <div class="card-title"><span class="num">5</span>Catatan</div>
+    <div class="card-desc">Ini yang bikin Manager tau AKAR MASALAH tanpa harus nanya-nanya lagi — kalau suatu hari angka jelek, Manager langsung tau kenapa dari sini, tanpa chat WA bolak-balik.</div>
     <div class="form-row">
       <label>Kendala Utama Hari Ini <span class="req">*</span></label>
       <select id="f-kendala_pilihan">
@@ -218,6 +219,16 @@ input,select,textarea,button{font-family:var(--font)}
         <option>Lainnya</option>
         <option>Tidak ada kendala</option>
       </select>
+      <div style="font-size:10px;color:var(--mut);line-height:1.8;margin-top:8px;background:var(--bg);border-radius:8px;padding:9px 11px">
+        <strong>Traffic</strong> = lead yang masuk kurang berkualitas (bukan salah CS)<br>
+        <strong>Kapasitas chat</strong> = kebanyakan chat masuk, kewalahan layani semua<br>
+        <strong>Respon</strong> = kelamaan/kurang meyakinkan pas balas chat<br>
+        <strong>Penawaran</strong> = udah qualified tapi gagal closing (harga/handling keberatan)<br>
+        <strong>Stok</strong> = produk yang diminta lagi kosong<br>
+        <strong>Harga</strong> = customer keberatan di harga<br>
+        <strong>Sistem</strong> = kendala teknis (WA lemot, internet mati, dll)<br>
+        <strong>Tidak ada kendala</strong> = hari itu lancar, gak ada masalah berarti
+      </div>
     </div>
     <div class="form-row">
       <label>Detail Kendala <span class="hint">(opsional)</span></label>
@@ -225,6 +236,7 @@ input,select,textarea,button{font-family:var(--font)}
     </div>
     <div class="form-row">
       <label>Catatan PIC <span class="hint">(opsional)</span></label>
+      <div class="form-hint" style="margin-top:0;margin-bottom:6px">Beda dari Kendala Utama — ini buat hal SPESIFIK di luar kategori manapun. Misal ada 1 customer yang komplain khusus, atau insight menarik dari 1 lead tertentu. Kosongin aja kalau gak ada yang khusus.</div>
       <textarea id="f-catatan_pic" rows="2" placeholder="Kasus khusus yang perlu diketahui Manager..."></textarea>
     </div>
   </div>
