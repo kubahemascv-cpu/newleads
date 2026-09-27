@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Form PIC New Leads — Faizal</title>
+<meta name="theme-color" content="#1D4ED8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Form New Leads">
+<link rel="apple-touch-icon" href="icon-512.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F7FA;--card:#FFFFFF;--card2:#EFF6FF;--bdr:#E2E8F0;
+  --txt:#0F172A;--txt2:#334155;--mut:#64748B;
+  --pri:#3B82F6;--pri-d:#1D4ED8;--pri-l:#EFF6FF;--pri-b:#BFDBFE;
+  --grn:#16A34A;--grn-l:#F0FDF4;--grn-b:#BBF7D0;
+  --amb:#D97706;--amb-l:#FFFBEB;--amb-b:#FDE68A;
+  --red:#DC2626;--red-l:#FEF2F2;--red-b:#FECACA;
+  --shd:0 2px 10px rgba(15,23,42,.06);
+  --font:'Poppins',-apple-system,sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--txt);min-height:100vh;-webkit-font-smoothing:antialiased}
+input,select,textarea,button{font-family:var(--font)}
+
+.topbar{background:linear-gradient(135deg,var(--pri),var(--pri-d));padding:16px 18px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(29,78,216,.25)}
+.tb-title{font-size:14px;font-weight:800;color:#fff}
+.tb-sub{font-size:10.5px;color:rgba(255,255,255,.75);margin-top:1px}
+
+.wrap{max-width:640px;margin:0 auto;padding:18px 16px 100px}
+
+.section-nav{display:flex;gap:6px;overflow-x:auto;padding:14px 0 4px;margin-bottom:6px;-webkit-overflow-scrolling:touch}
+.section-nav::-webkit-scrollbar{display:none}
+.nav-pill{flex-shrink:0;padding:8px 14px;border-radius:20px;background:var(--card);border:1.5px solid var(--bdr);font-size:11px;font-weight:700;color:var(--mut);white-space:nowrap;cursor:pointer}
+.nav-pill.active{background:var(--pri-d);border-color:var(--pri-d);color:#fff}
+.nav-pill.done{border-color:var(--grn);color:var(--grn)}
+
+.card{background:var(--card);border-radius:16px;padding:18px;box-shadow:var(--shd);border:1px solid var(--bdr);margin-bottom:14px}
+.card-title{font-size:13px;font-weight:800;color:var(--txt);display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.card-title .num{width:22px;height:22px;border-radius:50%;background:var(--pri-l);color:var(--pri-d);font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-desc{font-size:10.5px;color:var(--mut);margin-bottom:14px;line-height:1.6}
+
+.form-row{margin-bottom:13px}
+.form-row:last-child{margin-bottom:0}
+.form-row label{display:block;font-size:11.5px;font-weight:700;color:var(--txt2);margin-bottom:6px}
+.form-row .req{color:var(--red)}
+.form-row .hint{font-size:9.5px;color:var(--mut);font-weight:400;margin-left:4px}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:11px 13px;border:1.5px solid var(--bdr);border-radius:10px;font-size:13.5px;color:var(--txt);background:var(--bg);outline:none}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:var(--pri-d)}
+.form-row input[readonly]{background:var(--bdr);color:var(--txt2)}
+.form-hint{font-size:10px;color:var(--mut);margin-top:5px}
+.form-err{font-size:10px;color:var(--red);margin-top:5px;font-weight:600;display:none}
+.form-row.has-err input{border-color:var(--red)}
+.form-row.has-err .form-err{display:block}
+
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+.sum-box{background:var(--card2);border-radius:10px;padding:10px 12px;font-size:11px;color:var(--pri-d);font-weight:700;margin-top:4px;display:flex;justify-content:space-between}
+.sum-box.warn{background:var(--amb-l);color:var(--amb)}
+.sum-box.err{background:var(--red-l);color:var(--red)}
+
+.btn{padding:14px 20px;border-radius:12px;border:none;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;width:100%}
+.btn-primary{background:linear-gradient(135deg,var(--pri),var(--pri-d));color:#fff}
+.btn-outline{background:var(--card);border:1.5px solid var(--bdr);color:var(--txt2)}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--txt);color:#fff;padding:13px 20px;border-radius:12px;font-size:12.5px;font-weight:600;box-shadow:var(--shd);z-index:999;max-width:90vw;text-align:center;opacity:0;transition:opacity .25s;pointer-events:none}
+.toast.show{opacity:1}
+
+.setup-overlay{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;overflow-y:auto}
+.setup-overlay.show{display:block}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="tb-title">📋 Form PIC New Leads</div>
+  <div class="tb-sub">Meta Ads — Faizal</div>
+</header>
+
+<div class="wrap">
+  <div class="section-nav" id="section-nav"></div>
+
+  <!-- BAGIAN 1: IDENTITAS -->
+  <div class="card" data-section="1">
+    <div class="card-title"><span class="num">1</span>Identitas</div>
+    <div class="form-row">
+      <label>Tanggal Laporan <span class="req">*</span></label>
+      <input type="date" id="f-tanggal">
+    </div>
+    <div class="form-row">
+      <label>Nama PIC</label>
+      <input type="text" id="f-pic" value="Faizal" readonly>
+    </div>
+  </div>
+
+  <!-- BAGIAN 2: RESPON -->
+  <div class="card" data-section="2">
+    <div class="card-title"><span class="num">2</span>Respon</div>
+    <div class="card-desc">Data dari log lead hari ini — orang baru unik dari Meta Ads, tidak termasuk repeat customer.</div>
+    <div class="form-row">
+      <label>New Lead Masuk <span class="req">*</span></label>
+      <input type="number" inputmode="numeric" min="0" id="f-new_lead_masuk" placeholder="0">
+    </div>
+    <div class="form-row" id="row-lead_terjawab">
+      <label>Lead Terjawab <span class="req">*</span> <span class="hint">(≤ New Lead Masuk)</span></label>
+      <input type="number" inputmode="numeric" min="0" id="f-lead_terjawab" placeholder="0">
+      <div class="form-err">Gak boleh lebih besar dari New Lead Masuk</div>
+    </div>
+    <div class="form-row">
+      <label>Lead Terjawab ≤5 Menit <span class="req">*</span></label>
+      <input type="number" inputmode="numeric" min="0" id="f-lead_5menit" placeholder="0">
+    </div>
+    <div class="sum-box" id="sum-chat">Chat Terjawab: — · Fast Response: —</div>
+  </div>
+
+  <!-- BAGIAN 3: KUALIFIKASI -->
+  <div class="card" data-section="3">
+    <div class="card-title"><span class="num">3</span>Kualifikasi</div>
+    <div class="card-desc">HOT = udah tanya serius/stok/rencana beli 0-3 hari. WARM = ada kebutuhan tapi masih pertimbangan. LOW = masih tanya umum/belum jelas.</div>
+    <div class="form-row">
+      <label>Lead Terklasifikasi <span class="req">*</span></label>
+      <input type="number" inputmode="numeric" min="0" id="f-lead_terklasifikasi" placeholder="0">
+    </div>
+    <div class="form-row">
+      <label>Qualified Lead <span class="req">*</span></label>
+      <input type="number" inputmode="numeric" min="0" id="f-qualified" placeholder="0">
+    </div>
+    <div class="row3">
+      <div class="form-row">
+        <label>HOT <span class="req">*</span></label>
+        <input type="number" inputmode="numeric" min="0" id="f-hot" placeholder="0">
+      </div>
+      <div class="form-row">
+        <label>WARM <span class="req">*</span></label>
+        <input type="number" inputmode="numeric" min="0" id="f-warm" placeholder="0">
+      </div>
+      <div class="form-row">
+        <label>LOW <span class="req">*</span></label>
+        <input type="number" inputmode="numeric" min="0" id="f-low" placeholder="0">
+      </div>
+    </div>
+    <div class="sum-box" id="sum-klasifikasi">Total HOT+WARM+LOW: —</div>
+  </div>
+
+  <!-- BAGIAN 4: FOLLOW UP & HASIL -->
+  <div class="card" data-section="4">
+    <div class="card-title"><span class="num">4</span>Follow Up & Hasil</div>
+    <div class="form-row" id="row-wajib_fu">
+      <label>Lead Wajib Follow Up <span class="req">*</span></label>
+      <input type="number" inputmode="numeric" min="0" id="f-wajib_fu" placeholder="0">
+    </div>
+    <div class="form-row" id="row-sudah_fu">
+      <label>Lead Sudah Di-Follow Up <span class="req">*</span> <span class="hint">(≤ Wajib FU)</span></label>
+      <input type="number" inputmode="numeric" min="0" id="f-sudah_fu" placeholder="0">
+      <div class="form-err">Gak boleh lebih besar dari Lead Wajib Follow Up</div>
+    </div>
+    <div class="row2">
+      <div class="form-row">
+        <label>New Customer Deal <span class="req">*</span></label>
+        <input type="number" inputmode="numeric" min="0" id="f-new_customer_deal" placeholder="0">
+      </div>
+      <div class="form-row">
+        <label>Omzet New Traffic (Rp) <span class="req">*</span></label>
+        <input type="number" inputmode="numeric" min="0" id="f-omzet_new_traffic" placeholder="0">
+      </div>
+    </div>
+    <div class="form-row" id="row-lost_lead">
+      <label>Lost Lead <span class="req">*</span></label>
+      <input type="number" inputmode="numeric" min="0" id="f-lost_lead" placeholder="0">
+    </div>
+    <div class="form-row" id="row-lost_alasan">
+      <label>Lost dengan Alasan Lengkap <span class="req">*</span> <span class="hint">(≤ Lost Lead)</span></label>
+      <input type="number" inputmode="numeric" min="0" id="f-lost_dengan_alasan" placeholder="0">
+      <div class="form-err">Gak boleh lebih besar dari Lost Lead</div>
+    </div>
+    <div class="form-row" id="row-lost_reason">
+      <label>Lost Reason Dominan <span class="req">*</span> <span class="hint">(wajib kalau ada Lost Lead)</span></label>
+      <select id="f-lost_reason">
+        <option value="">— pilih —</option>
+        <option>Tidak respon</option>
+        <option>Harga</option>
+        <option>Lokasi</option>
+        <option>Stok-Produk</option>
+        <option>Belum siap beli</option>
+        <option>Kompetitor</option>
+        <option>Lainnya</option>
+      </select>
+    </div>
+    <div class="sum-box" id="sum-cr">Closing Rate New Lead: —</div>
+  </div>
+
+  <!-- BAGIAN 5: CATATAN -->
+  <div class="card" data-section="5">
+    <div class="card-title"><span class="num">5</span>Catatan</div>
+    <div class="form-row">
+      <label>Kendala Utama Hari Ini <span class="req">*</span></label>
+      <select id="f-kendala_pilihan">
+        <option value="">— pilih —</option>
+        <option>Traffic</option>
+        <option>Kapasitas chat</option>
+        <option>Respon</option>
+        <option>Penawaran</option>
+        <option>Stok</option>
+        <option>Harga</option>
+        <option>Sistem</option>
+        <option>Lainnya</option>
+        <option>Tidak ada kendala</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Detail Kendala <span class="hint">(opsional)</span></label>
+      <textarea id="f-kendala_detail" rows="2" placeholder="Detail tambahan soal kendala di atas..."></textarea>
+    </div>
+    <div class="form-row">
+      <label>Catatan PIC <span class="hint">(opsional)</span></label>
+      <textarea id="f-catatan_pic" rows="2" placeholder="Kasus khusus yang perlu diketahui Manager..."></textarea>
+    </div>
+  </div>
+
+  <button class="btn btn-primary" id="btn-submit" onclick="submitForm()">📤 Kirim Laporan Hari Ini</button>
+
+  <!-- SETUP -->
+  <div style="margin-top:18px;text-align:center">
+    <button class="btn btn-outline" style="width:auto;padding:8px 16px;font-size:11px" onclick="openSetup()">⚙️ Pengaturan Sheet</button>
+  </div>
+</div>
+
+<div class="setup-overlay" id="setup-overlay">
+  <div class="topbar"><div class="tb-title">⚙️ Pengaturan</div></div>
+  <div class="wrap">
+    <div class="card">
+      <div class="card-desc">Sambungin ke Google Sheet — pasang Apps Script (lihat file FormPICNewLeads_AppsScript.gs) dulu, baru isi URL-nya di sini.</div>
+      <div class="form-row"><label>URL Apps Script</label><input type="text" id="setup-url" placeholder="https://script.google.com/.../exec"></div>
+      <div class="form-row"><label>Token</label><input type="text" id="setup-token" placeholder="token rahasia lu"></div>
+      <button class="btn btn-primary" onclick="saveSetup()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════
+function ls(key,def){ try{ const v=localStorage.getItem(key); return v!==null?JSON.parse(v):def; }catch(e){ return def; } }
+function ss(key,val){ try{ localStorage.setItem(key,JSON.stringify(val)); }catch(e){} }
+function getCfg(){ return ls('formpic_cfg', null); }
+
+// Konfigurasi default — udah diisi langsung, biar gak perlu isi manual
+// di layar Setup lagi. Kalau suatu saat mau ganti Sheet/Token, tetep
+// bisa lewat ikon ⚙️ Pengaturan Sheet seperti biasa.
+const DEFAULT_CFG = {
+  url: 'https://script.google.com/macros/s/AKfycbyeY1oqRxRtM_bF8Uwx2W9wUYfkPXpTla7SCeZ9bQZzUQPG7EVf_9_50RK_iqRToY6d/exec',
+  token: 'newleads'
+};
+function setCfg(c){ ss('formpic_cfg', c); }
+
+function toast(msg,dur=3000){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer=setTimeout(()=>el.classList.remove('show'),dur);
+}
+
+function openSetup(){
+  const cfg=getCfg()||DEFAULT_CFG;
+  document.getElementById('setup-url').value=cfg.url||'';
+  document.getElementById('setup-token').value=cfg.token||'';
+  document.getElementById('setup-overlay').classList.add('show');
+}
+function closeSetup(){
+  document.getElementById('setup-overlay').classList.remove('show');
+}
+function saveSetup(){
+  const url=document.getElementById('setup-url').value.trim();
+  const token=document.getElementById('setup-token').value.trim();
+  if(!url||!token){ toast('⚠️ Lengkapi URL dan Token dulu.'); return; }
+  setCfg({url,token});
+  toast('✅ Setup tersimpan.');
+  closeSetup();
+}
+
+// ══════════════════════════════════════════════════════
+// SECTION NAV
+// ══════════════════════════════════════════════════════
+const SECTIONS=[
+  {id:1,label:'1. Identitas'},
+  {id:2,label:'2. Respon'},
+  {id:3,label:'3. Kualifikasi'},
+  {id:4,label:'4. Follow Up & Hasil'},
+  {id:5,label:'5. Catatan'},
+];
+function renderSectionNav(){
+  document.getElementById('section-nav').innerHTML=SECTIONS.map(s=>
+    `<div class="nav-pill" data-nav="${s.id}" onclick="scrollToSection(${s.id})">${s.label}</div>`
+  ).join('');
+}
+function scrollToSection(id){
+  const el=document.querySelector('.card[data-section="'+id+'"]');
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function num(id){ return +document.getElementById(id).value || 0; }
+
+// ══════════════════════════════════════════════════════
+// LIVE VALIDATION & KPI PREVIEW
+// ══════════════════════════════════════════════════════
+function validateAndPreview(){
+  const newLead=num('f-new_lead_masuk');
+  const terjawab=num('f-lead_terjawab');
+  const jawab5=num('f-lead_5menit');
+  const terklasifikasi=num('f-lead_terklasifikasi');
+  const hot=num('f-hot'), warm=num('f-warm'), low=num('f-low');
+  const wajibFu=num('f-wajib_fu');
+  const sudahFu=num('f-sudah_fu');
+  const deal=num('f-new_customer_deal');
+  const lostLead=num('f-lost_lead');
+  const lostAlasan=num('f-lost_dengan_alasan');
+
+  // Validasi 1: Lead Terjawab <= New Lead Masuk
+  const rowTerjawab=document.getElementById('row-lead_terjawab');
+  const errTerjawab=terjawab>newLead;
+  rowTerjawab.classList.toggle('has-err',errTerjawab);
+
+  // Validasi 2: Sudah FU <= Wajib FU
+  const rowSudahFu=document.getElementById('row-sudah_fu');
+  const errSudahFu=sudahFu>wajibFu;
+  rowSudahFu.classList.toggle('has-err',errSudahFu);
+
+  // Validasi 3: Lost dengan Alasan <= Lost Lead
+  const rowLostAlasan=document.getElementById('row-lost_alasan');
+  const errLostAlasan=lostAlasan>lostLead;
+  rowLostAlasan.classList.toggle('has-err',errLostAlasan);
+
+  // Validasi 4: Lost Reason wajib kalau Lost Lead > 0
+  const rowLostReason=document.getElementById('row-lost_reason');
+  const lostReasonVal=document.getElementById('f-lost_reason').value;
+  const errLostReason=lostLead>0 && !lostReasonVal;
+  rowLostReason.style.display='block';
+
+  // Preview: Chat Terjawab % & Fast Response %
+  const chatPct=newLead>0?Math.round(terjawab/newLead*100):null;
+  const fastPct=terjawab>0?Math.round(jawab5/terjawab*100):null;
+  const sumChat=document.getElementById('sum-chat');
+  sumChat.textContent='Chat Terjawab: '+(chatPct!==null?chatPct+'%':'—')+' · Fast Response: '+(fastPct!==null?fastPct+'%':'—');
+  sumChat.className='sum-box'+((chatPct!==null&&chatPct<90)||(fastPct!==null&&fastPct<80)?' warn':'');
+
+  // Preview: Total HOT+WARM+LOW vs Lead Terklasifikasi
+  const totalKlas=hot+warm+low;
+  const sumKlas=document.getElementById('sum-klasifikasi');
+  sumKlas.textContent='Total HOT+WARM+LOW: '+totalKlas+(terklasifikasi>0?' (Lead Terklasifikasi: '+terklasifikasi+')':'');
+  sumKlas.className='sum-box'+(totalKlas!==terklasifikasi&&terklasifikasi>0?' warn':'');
+
+  // Preview: Closing Rate New Lead
+  const crPct=newLead>0?+(deal/newLead*100).toFixed(1):null;
+  const sumCr=document.getElementById('sum-cr');
+  sumCr.textContent='Closing Rate New Lead: '+(crPct!==null?crPct+'%':'—')+(crPct!==null?(crPct>=20?' ✅':crPct>=15?' ⚠️':' 🔴'):'');
+  sumCr.className='sum-box'+(crPct!==null&&crPct<15?' err':crPct!==null&&crPct<20?' warn':'');
+
+  return !(errTerjawab||errSudahFu||errLostAlasan||errLostReason);
+}
+
+// ══════════════════════════════════════════════════════
+// SUBMIT
+// ══════════════════════════════════════════════════════
+async function submitForm(){
+  const ok=validateAndPreview();
+  if(!ok){ toast('⚠️ Ada isian yang belum sesuai aturan — cek yang ditandai merah.'); return; }
+
+  const tanggal=document.getElementById('f-tanggal').value;
+  if(!tanggal){ toast('⚠️ Tanggal Laporan wajib diisi.'); scrollToSection(1); return; }
+
+  // Cek field angka WAJIB — harus literally keisi (bukan cuma default 0
+  // dari konversi angka), biar PIC gak kelewat ngisi tanpa sadar.
+  const requiredNumFields=[
+    ['f-new_lead_masuk','New Lead Masuk',2],['f-lead_terjawab','Lead Terjawab',2],['f-lead_5menit','Lead Terjawab ≤5 Menit',2],
+    ['f-lead_terklasifikasi','Lead Terklasifikasi',3],['f-qualified','Qualified Lead',3],
+    ['f-hot','HOT',3],['f-warm','WARM',3],['f-low','LOW',3],
+    ['f-wajib_fu','Lead Wajib Follow Up',4],['f-sudah_fu','Lead Sudah Follow Up',4],
+    ['f-new_customer_deal','New Customer Deal',4],['f-omzet_new_traffic','Omzet New Traffic',4],
+    ['f-lost_lead','Lost Lead',4],['f-lost_dengan_alasan','Lost dengan Alasan Lengkap',4],
+  ];
+  for(const [id,label,sec] of requiredNumFields){
+    if(document.getElementById(id).value===''){
+      toast('⚠️ "'+label+'" wajib diisi (boleh 0, tapi jangan dikosongin).');
+      scrollToSection(sec);
+      return;
+    }
+  }
+  const kendalaPilihan0=document.getElementById('f-kendala_pilihan').value;
+  if(!kendalaPilihan0){ toast('⚠️ Kendala Utama Hari Ini wajib dipilih.'); scrollToSection(5); return; }
+
+  const newLead=num('f-new_lead_masuk');
+  const terklasifikasi=num('f-lead_terklasifikasi');
+  const wajibFu=num('f-wajib_fu');
+  const lostLead=num('f-lost_lead');
+  const lostReason=document.getElementById('f-lost_reason').value;
+
+  if(lostLead>0 && !lostReason){ toast('⚠️ Lost Reason Dominan wajib diisi karena ada Lost Lead.'); scrollToSection(4); return; }
+
+  const cfg=getCfg();
+  if(!cfg){ toast('⚠️ Setup Sheet belum diisi — klik ⚙️ Pengaturan Sheet dulu.'); return; }
+
+  const kendalaPilihan=kendalaPilihan0;
+  const kendalaDetail=document.getElementById('f-kendala_detail').value.trim();
+  const kendalaUtama=kendalaPilihan+(kendalaDetail?' — '+kendalaDetail:'');
+
+  const data={
+    tanggal:tanggal, pic:'Faizal',
+    new_lead_masuk:newLead, lead_terjawab:num('f-lead_terjawab'), lead_5menit:num('f-lead_5menit'),
+    lead_terklasifikasi:terklasifikasi, qualified:num('f-qualified'),
+    hot:num('f-hot'), warm:num('f-warm'), low:num('f-low'),
+    wajib_fu:wajibFu, sudah_fu:num('f-sudah_fu'),
+    new_customer_deal:num('f-new_customer_deal'), omzet_new_traffic:num('f-omzet_new_traffic'),
+    lost_lead:lostLead, lost_dengan_alasan:num('f-lost_dengan_alasan'), lost_reason:lostReason,
+    kendala_utama:kendalaUtama, catatan_pic:document.getElementById('f-catatan_pic').value.trim(),
+  };
+
+  const btn=document.getElementById('btn-submit');
+  btn.disabled=true; btn.textContent='⏳ Mengirim...';
+  try{
+    const res=await fetch(cfg.url,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({token:cfg.token, data:data})
+    }).then(r=>r.json());
+    if(res.ok){
+      toast('✅ Laporan tersimpan!');
+    } else {
+      toast('⚠️ '+(res.error||'Gagal simpan.'));
+    }
+  }catch(err){
+    toast('⚠️ Gagal terkirim — cek koneksi internet.');
+  }
+  btn.disabled=false; btn.textContent='📤 Kirim Laporan Hari Ini';
+}
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+document.getElementById('f-tanggal').value=todayStr();
+renderSectionNav();
+validateAndPreview();
+
+['f-new_lead_masuk','f-lead_terjawab','f-lead_5menit','f-lead_terklasifikasi','f-hot','f-warm','f-low',
+ 'f-wajib_fu','f-sudah_fu','f-new_customer_deal','f-lost_lead','f-lost_dengan_alasan','f-lost_reason'
+].forEach(id=>{
+  document.getElementById(id).addEventListener('input',validateAndPreview);
+  document.getElementById(id).addEventListener('change',validateAndPreview);
+});
+
+if(!getCfg()){ setCfg(DEFAULT_CFG); }
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('./sw.js')
+      .then(function(r){console.log('[SW] OK',r.scope);})
+      .catch(function(e){console.warn('[SW]',e);});
+  });
+}
+</script>
+</body>
+</html>
